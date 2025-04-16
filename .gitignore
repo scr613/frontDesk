@@ -1,0 +1,30 @@
+# Android 忽略
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+*.keystore
+*.apk
+*.aab
+
+# iOS 忽略
+ios/Pods/
+ios/build/
+ios/**/*.xcworkspace
+ios/**/Podfile.lock
+ios/**/xcuserdata
+
+# 通用忽略
+node_modules/
+.env
+*.log
+*.hprof
+.release
+
+# 建议添加
+.DS_Store
+.idea/
+.vscode/
+dist/
+build/
+coverage/
