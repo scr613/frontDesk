@@ -9,9 +9,8 @@ import {
     Platform,
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-type RootStackParamList = {
-    Login: undefined;
-};
+
+import { RootStackParamList } from '../../types/navigation';
 const { width, height } = Dimensions.get('window');
 
 const StartPage = () => {
@@ -27,7 +26,7 @@ const StartPage = () => {
 
         // 设置定时器跳转到登录页
         const timer = setTimeout(() => {
-            navigation.navigate('login');
+            navigation.navigate('startLogin');
         }, 2000);
 
         return () => clearTimeout(timer);

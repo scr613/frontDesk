@@ -2,7 +2,10 @@ import { NavigationProp } from '@react-navigation/native';
 import HomePage from '../view/home/HomePage.tsx';
 import LoginPage from '../view/login/LoginPage.tsx';
 import StartPage from '../view/start/startPage.tsx';
+import StartLogin from '../view/start/startLogin.tsx';
+import RegisterPage from '../view/login/RegisterPage.tsx';
 
+// import { lazy } from 'react';
 // 路由配置类型定义
 export interface RouteConfig {
     name: string;
@@ -32,6 +35,16 @@ export const routeDB: RouteConfig[] = [
         name: 'login',
         component: LoginPage,
         options: { title: '登录' },
+    },
+    {
+        name: 'startLogin',
+        component: StartLogin,
+        options: { title: '启动登录' },
+    },
+    {
+        name:'register',
+        component: RegisterPage,
+        options: { title: '注册' },
     },
 ];
 
