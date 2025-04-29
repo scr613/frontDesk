@@ -1,13 +1,13 @@
-import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView, PanResponder, Animated, Alert } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import { RootStackParamList } from '../../types/navigation';
-
 const { width } = Dimensions.get('window');
 
 const HomePage = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
 
 
     const imgSwiper = [
@@ -41,66 +41,106 @@ const HomePage = () => {
         },
     ];
 
+
+    const handleAIPress = () => {
+        navigation.navigate('ai');
+    };
+
+
+
+    const pan = useRef(new Animated.ValueXY()).current;
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: (_, gesture) => {
+            pan.setValue({
+                x: gesture.dx,
+                y: gesture.dy,
+            });
+        },
+        onPanResponderRelease: () => {
+            pan.extractOffset();
+        }
+    });
+
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                <View style={styles.swiperContainer}>
-                    <Swiper  
-                        autoplay
-                        autoplayTimeout={3}
-                        showsPagination
-                        dotStyle={styles.dotStyle}
-                        activeDotStyle={styles.activeDotStyle}
-                    >
-                        {
-                            imgSwiper.map((item) => (
-                                <View key={item._id} style={styles.slide}>
-                                    <Image
-                                        source={{ uri: item.imgUrl }}
-                                        style={styles.image}
-                                    />
-                                </View>
-                            ))
-                        }
-                    </Swiper>
-                </View>
-                <View style={styles.cardContainer}>
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>总额度 (元)</Text>
-                        <Text style={styles.cardValue}>暂无额度</Text>
-                        <TouchableOpacity style={styles.checkButton}>
-                            <Text style={styles.checkButtonText}>测测我的额度</Text>
-                        </TouchableOpacity>
+        <>
+            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+                <View style={styles.content}>
+                    <View style={styles.swiperContainer}>
+                        <Swiper
+                            autoplay
+                            autoplayTimeout={3}
+                            showsPagination
+                            dotStyle={styles.dotStyle}
+                            activeDotStyle={styles.activeDotStyle}
+                        >
+                            {
+                                imgSwiper.map((item) => (
+                                    <View key={item._id} style={styles.slide}>
+                                        <Image
+                                            source={{ uri: item.imgUrl }}
+                                            style={styles.image}
+                                        />
+                                    </View>
+                                ))
+                            }
+                        </Swiper>
                     </View>
-                    <View style={styles.quickLinks}>
-                        <TouchableOpacity style={styles.linkItem}>
-                            <Text style={styles.linkText}>借款帮助</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.linkItem}>
-                            <Text style={styles.linkText}>息费计息</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.loanListContainer}>
-                    {loanProducts.map(product => (
-                        <View key={product.id} style={styles.loanItem}>
-                            <View style={styles.loanInfo}>
-                                <Text style={styles.loanTitle}>{product.title}</Text>
-                                <Text style={styles.loanAmount}>
-                                    最高可申请贷款(元) {product.maxAmount.toLocaleString()}
-                                </Text>
-                                <Text style={styles.loanDesc}>{product.description}</Text>
-                            </View>
-                            <TouchableOpacity
-                                style={styles.loanButton}
-                            >
-                                <Text style={styles.loanButtonText}>立即借款</Text>
+                    <View style={styles.cardContainer}>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>总额度 (元)</Text>
+                            <Text style={styles.cardValue}>暂无额度</Text>
+                            <TouchableOpacity style={styles.checkButton}>
+                                <Text style={styles.checkButtonText}>测测我的额度</Text>
                             </TouchableOpacity>
                         </View>
-                    ))}
+                        <View style={styles.quickLinks}>
+                            <TouchableOpacity style={styles.linkItem}>
+                                <Text style={styles.linkText}>借款帮助</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.linkItem}>
+                                <Text style={styles.linkText}>息费计息</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.loanListContainer}>
+                        {loanProducts.map(product => (
+                            <View key={product.id} style={styles.loanItem}>
+                                <View style={styles.loanInfo}>
+                                    <Text style={styles.loanTitle}>{product.title}</Text>
+                                    <Text style={styles.loanAmount}>
+                                        最高可申请贷款(元) {product.maxAmount.toLocaleString()}
+                                    </Text>
+                                    <Text style={styles.loanDesc}>{product.description}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    style={styles.loanButton}
+                                >
+                                    <Text style={styles.loanButtonText}>立即借款</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                    </View>
                 </View>
-            </View>
-        </View>
+            </ScrollView>
+            <Animated.View
+                style={[
+                    styles.aiTouchable,
+                    {
+                        transform: [
+                            { translateX: pan.x },
+                            { translateY: pan.y }
+                        ]
+                    }
+                ]}
+                {...panResponder.panHandlers}
+            >
+                <TouchableOpacity onPress={handleAIPress}  activeOpacity={0.8}>
+                    <Text style={styles.aiButtonText}>AI</Text>
+                </TouchableOpacity>
+            </Animated.View>
+        </>
     );
 };
 
@@ -109,43 +149,25 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    scrollContent: {
-        flex: 1,
-    },
     content: {
-        padding: 16,
-    },
-    tabBar: {
-        flexDirection: 'row',
-        height: 50,
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
-    },
-    tabItem: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tabText: {
-        fontSize: 14,
-        color: '#333',
+        padding: 30,
     },
     swiperContainer: {
         height: 200,
         marginBottom: 20,
-        overflow: 'hidden',  // 添加这行确保图片不会溢出容器
+        overflow: 'hidden',
     },
     slide: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',  // 添加这行
+        overflow: 'hidden',
     },
     image: {
-        width: width - 32,  // 减去padding的值
+        width: width - 32,
         height: '100%',
-        resizeMode: 'contain',  // 修改为contain以确保图片完整显示
-        borderRadius: 8,  // 可选：添加圆角
+        resizeMode: 'contain',
+        borderRadius: 8,
     },
     dotStyle: {
         backgroundColor: 'rgba(255,255,255,.3)',
@@ -264,6 +286,20 @@ const styles = StyleSheet.create({
         color: '#e54545',
         fontSize: 14,
         fontWeight: '500',
+    },
+    aiTouchable: {
+        backgroundColor: '#e54545',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        position: 'absolute',
+        bottom: 20,
+        right: -4,
+        zIndex: 999,
+    },
+    aiButtonText: {
+        color: '#fff',
+        fontSize: 12,
     },
 });
 

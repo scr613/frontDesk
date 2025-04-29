@@ -4,7 +4,7 @@ import LoginPage from '../view/login/LoginPage.tsx';
 import StartPage from '../view/start/startPage.tsx';
 import StartLogin from '../view/start/startLogin.tsx';
 import RegisterPage from '../view/login/RegisterPage.tsx';
-
+import AIPage from '../view/ai/ai.tsx';
 // import { lazy } from 'react';
 // 路由配置类型定义
 export interface RouteConfig {
@@ -29,7 +29,22 @@ export const routeDB: RouteConfig[] = [
     {
         name: 'home',
         component: HomePage,
-        options: { title: '首页' },
+        options: { title: '首页', icon: 'home' },
+    },
+    {
+        name: 'repayment',
+        component: HomePage,
+        options: { title: '还款', icon: 'credit-card' },
+    },
+    {
+        name: 'ai',
+        component: AIPage,
+        options: { title: 'AI助手', icon: 'robot' },
+    },
+    {
+        name: 'myself',
+        component: HomePage,
+        options: { title: '我的', icon: 'user' },
     },
     {
         name: 'login',
@@ -57,7 +72,7 @@ type ExtractRouteNames<T extends RouteConfig[]> = {
         : never]: undefined
 };
 
-export type RootStackParamList = ExtractRouteNames<typeof routeDB>;
+export type RootStackParamLists = ExtractRouteNames<typeof routeDB>;
 
 // 导航类型
-export type NavigationType = NavigationProp<RootStackParamList>;
+export type NavigationType = NavigationProp<RootStackParamLists>;

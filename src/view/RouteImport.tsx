@@ -3,14 +3,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { routeDB } from '../Router/RouteDB';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
     // 获取底部导航相关的路由配置
-    const tabRoutes = routeDB.filter(route => 
-        ['home', 'repayment', 'message', 'myself'].includes(route.name)
+    const tabRoutes = routeDB.filter(route =>
+        ['home', 'repayment',  'myself'].includes(route.name)
     );
 
     if (tabRoutes.length === 0) {
@@ -36,6 +37,13 @@ const TabNavigator = () => {
                     component={route.component}
                     options={{
                         tabBarLabel: route.options?.title || route.name,
+                        tabBarIcon: ({ color, size}) => (
+                            <Icon
+                                name={route.options?.icon || 'house'}
+                                size={size}
+                                color={color}
+                            />
+                        )
                     }}
                 />
             ))}
@@ -43,16 +51,21 @@ const TabNavigator = () => {
     );
 };
 
+const shouldShowHeader = (routeName: string): boolean => {
+    // 可以根据不同路由名称返回不同的显示状态
+    const showHeaderRoutes = ['ai'];
+    return showHeaderRoutes.includes(routeName);
+};
+
 const RouteImport = () => {
     // 获取非底部导航的路由配置
-    const stackRoutes = routeDB.filter(route => 
+    const stackRoutes = routeDB.filter(route =>
         !['home', 'repayment', 'message', 'myself'].includes(route.name)
     );
 
     if (stackRoutes.length === 0) {
         return null;
     }
-
     return (
         <NavigationContainer
             onStateChange={(state) => {
@@ -64,9 +77,16 @@ const RouteImport = () => {
         >
             <Stack.Navigator
                 initialRouteName="start"
-                screenOptions={{
-                    headerShown: false,
-                }}
+                screenOptions={({ route }) => ({
+                    headerShown: shouldShowHeader(route.name),
+                    headerStyle: {
+                        backgroundColor: '#fff',
+                    },
+                    headerTintColor: '#333',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                })}
             >
                 {stackRoutes.map(route => (
                     <Stack.Screen

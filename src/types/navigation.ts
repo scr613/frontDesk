@@ -1,4 +1,4 @@
-import { NavigationType } from '../Router/RouteDB';
+import { NavigationType,RootStackParamLists } from '../Router/RouteDB';
 
 // 导出路由相关类型
 export type { NavigationType };
@@ -28,13 +28,4 @@ export type NavigationEvent = {
     };
 };
 
-export type RootStackParamList = {
-    start: undefined;
-    login: undefined;
-    register: undefined;
-    startLogin: undefined;  // 添加 startLogin 路由
-    main: {
-        screen?: string;
-    };
-    forgotPassword: undefined;
-};
+export type RootStackParamList = RootStackParamLists
